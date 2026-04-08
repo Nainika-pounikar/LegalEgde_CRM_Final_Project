@@ -44,7 +44,7 @@ function getStatusBadgeClass(status) {
 }
 
 export default function Calls() {
-  const { store, showToast, addMeeting, currentUser } = useCRM();
+  const { store, showToast, addMeeting } = useCRM();
   const [activeCall, setActiveCall] = useState(null);
   const [callTime, setCallTime] = useState(0);
   const [muted, setMuted] = useState(false);

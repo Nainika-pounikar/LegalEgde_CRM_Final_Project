@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db import DatabaseError
 from rest_framework import status, generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -39,6 +40,11 @@ class LoginView(TokenObtainPairView):
                 {'error': 'Multiple accounts match this email. Contact admin.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        except DatabaseError:
+            return Response(
+                {'error': 'Database unavailable. Check deployment database configuration and migrations.'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
 
         if not user.is_active:
             return Response({'error': 'Account disabled. Contact admin'}, status=status.HTTP_403_FORBIDDEN)
@@ -46,17 +52,23 @@ class LoginView(TokenObtainPairView):
         if not user.check_password(password):
             return Response({'error': 'Invalid email or password. Please try again.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        serializer = self.get_serializer(data={'email': email, 'password': password})
-        if not serializer.is_valid():
-            errors = serializer.errors
-            msg = None
-            for key, val in errors.items():
-                if key == 'error':
+        try:
+            serializer = self.get_serializer(data={'email': email, 'password': password})
+            if not serializer.is_valid():
+                errors = serializer.errors
+                msg = None
+                for key, val in errors.items():
+                    if key == 'error':
+                        msg = val[0] if isinstance(val, list) else str(val)
+                        break
                     msg = val[0] if isinstance(val, list) else str(val)
                     break
-                msg = val[0] if isinstance(val, list) else str(val)
-                break
-            return Response({'error': msg or 'Invalid credentials.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': msg or 'Invalid credentials.'}, status=status.HTTP_400_BAD_REQUEST)
+        except DatabaseError:
+            return Response(
+                {'error': 'Database unavailable. Check deployment database configuration and migrations.'},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
 
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 

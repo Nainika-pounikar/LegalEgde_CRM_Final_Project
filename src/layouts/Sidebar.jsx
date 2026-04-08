@@ -176,7 +176,6 @@ function FlyoutMenu({ group, onNavigate, activePath, onToggleBookmark, bookmarks
       const triggerRect = triggerRef.current.getBoundingClientRect();
       const flyoutHeight = flyoutRef.current.offsetHeight;
       const viewportHeight = window.innerHeight;
-      const maxHeight = Math.max(220, viewportHeight - viewportPadding * 2);
       const maxTop = Math.max(viewportPadding, viewportHeight - viewportPadding - flyoutHeight);
       const top = Math.min(Math.max(triggerRect.top, viewportPadding), maxTop);
 

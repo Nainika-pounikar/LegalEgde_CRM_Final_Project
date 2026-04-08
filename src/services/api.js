@@ -3,7 +3,20 @@
  * Base URL defaults to '/api' (Vite proxy) and can be overridden with VITE_API_BASE_URL.
  */
 
-const BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '');
+function inferProductionApiBaseUrl() {
+  if (typeof window === 'undefined') return '/api';
+  const host = window.location.hostname || '';
+  if (host.endsWith('-frontend.onrender.com')) {
+    const backendHost = host.replace('-frontend.onrender.com', '-backend.onrender.com');
+    return `https://${backendHost}/api`;
+  }
+  return '/api';
+}
+
+const BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL
+  || (import.meta.env.DEV ? '/api' : inferProductionApiBaseUrl())
+).replace(/\/+$/, '');
 const DEV_DIRECT_BASE_URLS = ['http://localhost:8000/api', 'http://127.0.0.1:8000/api'];
 const SHOULD_RETRY_DIRECT_IN_DEV = import.meta.env.DEV && BASE_URL === '/api';
 
@@ -91,6 +104,23 @@ async function readErrorPayload(response) {
     return JSON.parse(rawText);
   } catch {
     return { message: rawText };
+  }
+}
+
+async function readSuccessPayload(response, fallback = 'Request failed') {
+  const rawText = await response.text().catch(() => '');
+  if (!rawText) {
+    return null;
+  }
+  if (looksLikeHtmlDocument(rawText)) {
+    const message = summarizeHtmlError(rawText, response, fallback);
+    throw new Error(`${message} Verify VITE_API_BASE_URL points to the backend /api path.`);
+  }
+  try {
+    return JSON.parse(rawText);
+  } catch {
+    const statusPart = response?.status ? ` (HTTP ${response.status})` : '';
+    throw new Error(`${fallback}${statusPart}. Server returned invalid JSON.`);
   }
 }
 
@@ -227,7 +257,7 @@ async function apiFetch(path, options = {}) {
 
   // 204 No Content
   if (response.status === 204) return null;
-  return response.json();
+  return readSuccessPayload(response);
 }
 
 async function blobFetch(path, options = {}) {
@@ -288,7 +318,8 @@ async function tryRefreshToken() {
         body: JSON.stringify({ refresh }),
       });
       if (!res.ok) return false;
-      const data = await res.json();
+      const data = await readSuccessPayload(res, 'Token refresh failed');
+      if (!data?.access) return false;
       // Keep in same storage as original
       const inLocal = !!localStorage.getItem('crm_refresh');
       storeTokens(data.access, data.refresh, inLocal);
@@ -315,7 +346,10 @@ export const authAPI = {
       const err = await readErrorPayload(res);
       throw new Error(buildHttpErrorMessage(err, res, 'Invalid credentials.'));
     }
-    const data = await res.json();
+    const data = await readSuccessPayload(res, 'Login failed');
+    if (!data?.access || !data?.user) {
+      throw new Error('Login failed. API response is missing required auth fields.');
+    }
     storeTokens(data.access, data.refresh, remember);
     const storage = remember ? localStorage : sessionStorage;
     storage.setItem('crm_user', JSON.stringify(data.user));
@@ -333,7 +367,10 @@ export const authAPI = {
       const err = await readErrorPayload(res);
       throw new Error(buildHttpErrorMessage(err, res, 'Signup failed'));
     }
-    const data = await res.json();
+    const data = await readSuccessPayload(res, 'Signup failed');
+    if (!data?.access || !data?.user) {
+      throw new Error('Signup failed. API response is missing required auth fields.');
+    }
     storeTokens(data.access, data.refresh, false);
     sessionStorage.setItem('crm_user', JSON.stringify(data.user));
     if (data?.user?.role) sessionStorage.setItem('crm_role', data.user.role);
