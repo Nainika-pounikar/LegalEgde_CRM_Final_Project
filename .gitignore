@@ -1,8 +1,28 @@
+# Dependency directories
 node_modules/
+frontend/node_modules/
+venv/
+.venv/
+
+# Build and distribution artifacts
 dist/
+build/
+frontend/dist/
+frontend/build/
+backend/staticfiles/
+backend/media/
+staticfiles/
+media/
+
+# Python artifacts
 __pycache__/
+**/__pycache__/
 *.py[cod]
+*.pyo
+*.pyd
 db.sqlite3
+backend/db.sqlite3
+backend/legaledge_backend/db.sqlite3
 
 # Logs
 *.log
@@ -11,17 +31,15 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Environment files
+# Environment files (keep examples)
 .env
 .env.*
 !.env.example
+!backend/.env.example
+!frontend/.env.example
 
 # OS/editor noise
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
-
-venv/
-staticfiles/
-media/

@@ -27,6 +27,7 @@ function renderWithProviders(element) {
 }
 
 async function click(element) {
+  expect(element).toBeTruthy();
   await act(async () => {
     element.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   });

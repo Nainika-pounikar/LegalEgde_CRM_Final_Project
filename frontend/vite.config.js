@@ -1,8 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+const isVitest = process.env.VITEST === 'true';
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [isVitest ? null : react()].filter(Boolean),
   base: '/',
   server: {
     proxy: {
@@ -18,8 +20,10 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     css: true,
+    setupFiles: './vitest.setup.js',
   },
   build: {
+    chunkSizeWarningLimit: 800,
     rollupOptions: {
       output: {
         manualChunks(id) {

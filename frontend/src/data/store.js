@@ -1,11 +1,9 @@
-// ─────────────────────────────────────────────────────────────────────────────
-//  LegalEdge CRM  ·  Central Data Store
-// ─────────────────────────────────────────────────────────────────────────────
+﻿// LegalEdge CRM - Central data store.
 export const OWNERS = ['Nainika Pounikar','Gaurav Dotonde','Bali Dondkar','Nikhil Lade','Styajit Galande','Subodh Badole'];
 export const INDUSTRIES = ['Technology','Legal','Finance','Healthcare','Retail','Manufacturing','Education','Construction','Other'];
 
 export function todayStr() { return new Date().toISOString().split('T')[0]; }
-export function fmtINR(n)  { return '₹' + Number(n).toLocaleString('en-IN'); }
+export function fmtINR(n)  { return 'INR ' + Number(n).toLocaleString('en-IN'); }
 export function initials(name) { return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
 export const AVATAR_COLORS = ['av-blue','av-green','av-purple','av-orange','av-red','av-teal'];
 
@@ -18,7 +16,20 @@ export const initialStore = {
   notes: [],
   companies: [],
   tickets: [],
-  callLogs: [],
+  callLogs: [
+    {
+      id: 1,
+      contact: 'Rahul Sharma',
+      phone: '+91-9876543210',
+      type: 'Outbound Phone',
+      status: 'Answered',
+      duration: '08:15',
+      date: '2026-04-01',
+      time: '11:20',
+      notes: 'Follow-up discussion on enterprise onboarding',
+      created: '2026-04-01T11:20:00Z',
+    },
+  ],
   meetings: [],
   inbox: [
     {id:1,from:'Rahul Sharma',email:'rahul.sharma@techcorp.in',subject:'Re: LegalEdge Enterprise Proposal',   preview:'Thank you for sending over the proposal. The team has reviewed and we have a few questions about the pricing structure...',time:'10:32 AM',  unread:true, tag:'Deal'},
@@ -44,11 +55,11 @@ export const initialStore = {
     {id:2,name:'Follow-up After Demo',subject:'Thank you for your time, {{first_name}}',           preview:'Hi {{first_name}}, It was great speaking with you today...',tags:['Sales','Follow-up'],  used:38},
     {id:3,name:'Proposal Email',     subject:'LegalEdge CRM Proposal for {{company}}',             preview:'Dear {{first_name}}, Please find attached the proposal...',tags:['Sales','Proposal'],   used:22},
     {id:4,name:'Invoice Reminder',   subject:'Invoice #{{invoice_number}} Due Soon',               preview:'Hi {{first_name}}, This is a gentle reminder...',          tags:['Billing','Reminder'], used:17},
-    {id:5,name:'Support Response',   subject:'Re: {{ticket_subject}} – Ticket #{{ticket_id}}',    preview:'Hi {{first_name}}, Thank you for reaching out...',          tags:['Support','Service'],  used:29},
+    {id:5,name:'Support Response',   subject:'Re: {{ticket_subject}} - Ticket #{{ticket_id}}',    preview:'Hi {{first_name}}, Thank you for reaching out...',          tags:['Support','Service'],  used:29},
   ],
   snippets: [
     {id:1,shortcut:'#intro',  name:'Introduction',text:"Hi, I'm from LegalEdge CRM. We help businesses manage their customer relationships and sales pipeline with an intuitive, powerful platform."},
-    {id:2,shortcut:'#pricing',name:'Pricing Info', text:'Our plans start at ₹4,999/month for Starter. Professional at ₹12,999/month and Enterprise at ₹39,999/month with full feature access.'},
+    {id:2,shortcut:'#pricing',name:'Pricing Info', text:'Our plans start at INR 4,999/month for Starter. Professional at INR 12,999/month and Enterprise at INR 39,999/month with full feature access.'},
     {id:3,shortcut:'#demo',   name:'Demo CTA',     text:'Would you like to schedule a personalized demo? I can walk you through how LegalEdge CRM can help specifically with your use case.'},
     {id:4,shortcut:'#thanks', name:'Thank You',    text:'Thank you for your time and consideration. I look forward to speaking with you. Please feel free to reach out anytime.'},
   ],
@@ -56,7 +67,7 @@ export const initialStore = {
     {id:1,name:'LegalEdge CRM Brochure.pdf',        type:'PDF', size:'2.4 MB',views:34,created:'2026-02-01',owner:'Shailesh Bhange'},
     {id:2,name:'Enterprise Proposal Template.docx',  type:'Word',size:'1.2 MB',views:18,created:'2026-02-10',owner:'Nainika Pounikar'},
     {id:3,name:'Onboarding Guide.pdf',               type:'PDF', size:'4.1 MB',views:52,created:'2026-01-15',owner:'Gaurav Dotonde'},
-    {id:4,name:'Case Study – TechCorp.pdf',          type:'PDF', size:'1.8 MB',views:28,created:'2026-03-01',owner:'Bali Dondkar'},
+    {id:4,name:'Case Study - TechCorp.pdf',          type:'PDF', size:'1.8 MB',views:28,created:'2026-03-01',owner:'Bali Dondkar'},
   ],
   blogs: [
     {id:1,title:'5 Ways CRM Improves Sales Performance',  status:'Published', author:'Shailesh Bhange', date:'2026-02-15',views:1240,category:'Sales'},
@@ -80,3 +91,5 @@ export const initialStore = {
     {name:'IndiaMART',        icon:'fa-store',     category:'Leads',     status:'Not Connected',since:null},
   ],
 };
+
+

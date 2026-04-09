@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useCRM } from '../context/CRMContext';
 
@@ -118,11 +118,11 @@ export default function Calls() {
     setActiveCall(contact);
     setMuted(false);
     setOnHold(false);
-    showToast(`Calling ${contact.contact}…`);
+    showToast(`Calling ${contact.contact}...`);
   };
 
   const endCall = () => {
-    showToast(`Call with ${activeCall?.contact} ended · ${fmt(callTime)}`);
+    showToast(`Call with ${activeCall?.contact} ended - ${fmt(callTime)}`);
     setActiveCall(null);
   };
 
@@ -265,7 +265,7 @@ export default function Calls() {
           {/* Body */}
           <div style={{ padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
 
-            {/* Row 1 — Title */}
+            {/* Row 1 - Title */}
             <div>
               <label style={labelStyle}>Meeting Title <span style={{ color: '#e53e3e' }}>*</span></label>
               <input
@@ -277,7 +277,7 @@ export default function Calls() {
               />
             </div>
 
-            {/* Row 2 — Contact */}
+            {/* Row 2 - Contact */}
             <div>
               <label style={labelStyle}>Contact Name</label>
               <input
@@ -289,7 +289,7 @@ export default function Calls() {
               />
             </div>
 
-            {/* Row 3 — Date + Time */}
+            {/* Row 3 - Date + Time */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
               <div>
                 <label style={labelStyle}>Date <span style={{ color: '#e53e3e' }}>*</span></label>
@@ -303,7 +303,7 @@ export default function Calls() {
               </div>
             </div>
 
-            {/* Row 4 — Platform + Duration */}
+            {/* Row 4 - Platform + Duration */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
               <div>
                 <label style={labelStyle}>Platform</label>
@@ -327,7 +327,7 @@ export default function Calls() {
               </div>
             </div>
 
-            {/* Row 5 — Notes */}
+            {/* Row 5 - Notes */}
             <div>
               <label style={labelStyle}>
                 Notes{' '}
@@ -497,8 +497,8 @@ export default function Calls() {
                 <div className="meeting-icon"><i className="fa-solid fa-video" /></div>
                 <div className="meeting-body">
                   <div className="meeting-title">{m.title}</div>
-                  <div className="meeting-meta">{m.date} · {m.time} · {m.duration}</div>
-                  <div className="meeting-contact">{m.contact} · {m.platform}</div>
+                  <div className="meeting-meta">{m.date} - {m.time} - {m.duration}</div>
+                  <div className="meeting-contact">{m.contact} - {m.platform}</div>
                 </div>
                 <span className="badge badge-scheduled">Scheduled</span>
               </div>
@@ -518,3 +518,4 @@ export default function Calls() {
     </div>
   );
 }
+

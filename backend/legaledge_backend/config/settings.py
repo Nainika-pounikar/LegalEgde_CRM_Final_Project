@@ -289,7 +289,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Frontend
-FRONTEND_URL = env_str('FRONTEND_URL', default='http://127.0.0.1:5173').rstrip('/')
+FRONTEND_URL = env_str('FRONTEND_URL', default='http://localhost:5175').rstrip('/')
 
 
 # CORS / CSRF
@@ -297,6 +297,8 @@ default_cors_origins = [FRONTEND_URL]
 if DEBUG:
     default_cors_origins.extend(
         [
+            'http://localhost:5175',
+            'http://127.0.0.1:5175',
             'http://localhost:5173',
             'http://127.0.0.1:5173',
         ]
@@ -310,6 +312,8 @@ default_csrf_origins = [FRONTEND_URL]
 if DEBUG:
     default_csrf_origins.extend(
         [
+            'http://localhost:5175',
+            'http://127.0.0.1:5175',
             'http://localhost:5173',
             'http://127.0.0.1:5173',
         ]
