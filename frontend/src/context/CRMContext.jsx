@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useState, useCallback, useEffect, useRef } from 'react';
+﻿import { createContext, useContext, useReducer, useState, useCallback, useEffect, useRef } from 'react';
 import { initialStore } from '../data/store';
 import {
   permissions,
@@ -91,20 +91,18 @@ export function CRMProvider({ children }) {
   const [authChecked, setAuthChecked] = useState(!!currentUser); // Track if auth has been checked
   const role = currentUser?.role;
 
-  // ──────────────────────────────────────────────────────────────────────────
-  // FIX: Fetch data on login, don't skip if API fails on page refresh
-  // ──────────────────────────────────────────────────────────────────────────
+  // Fetch data on login and keep fallback data if API calls fail.
   useEffect(() => {
     const fetchStoreData = async () => {
       if (!currentUser) {
-        console.log('[CRM] ⚠ No authenticated user - keeping fallback data, mark auth checked');
+        console.log('[CRM] WARN No authenticated user; keeping fallback data and marking auth as checked.');
         setStoreLoading(false);
         setAuthChecked(true);
         return;
       }
 
       setStoreLoading(true);
-      console.log(`[CRM] 🔄 Fetching data on ${new Date().toLocaleTimeString()} for: ${currentUser.name}`);
+      console.log(`[CRM] SYNC Fetching data at ${new Date().toLocaleTimeString()} for ${currentUser.name}.`);
       
       try {
         const results = await Promise.allSettled([
@@ -136,29 +134,29 @@ export function CRMProvider({ children }) {
             } else {
               updates[entity] = data;
             }
-            console.log(`[CRM] ✅ ${entity}: ${data.length} records loaded`);
+            console.log(`[CRM] OK ${entity}: ${data.length} records loaded.`);
             successCount++;
           } else {
             failureCount++;
             const errorMsg = result.reason?.message || result.reason || 'Unknown error';
-            console.error(`[CRM] ❌ ${entity} failed:`, errorMsg);
+            console.error(`[CRM] FAIL ${entity} request failed:`, errorMsg);
           }
         });
 
-        console.log(`[CRM] 📊 Data fetch result: ${successCount}✅ / ${failureCount}❌ (${successCount + failureCount} total)`);
+        console.log(`[CRM] STATS Fetch result: ${successCount} success, ${failureCount} failed (${successCount + failureCount} total).`);
 
         if (Object.keys(updates).length > 0) {
-          console.log('[CRM] 💾 Updating store with fetched data...');
+          console.log('[CRM] SAVE Updating store with fetched data.');
           dispatch({ type: 'SET_ALL', payload: updates });
         } else {
-          console.warn('[CRM] ⚠ No data fetched - keeping fallback data from initialStore');
+          console.warn('[CRM] WARN No data fetched; keeping fallback data from initialStore.');
         }
       } catch (err) {
-        console.error('[CRM] 💥 Critical error during data fetch:', err.message, err);
+        console.error('[CRM] ERROR Critical error during data fetch:', err.message, err);
       } finally {
         setStoreLoading(false);
-        setAuthChecked(true);  // ← Mark auth check as complete AFTER fetch
-        console.log('[CRM] ✅ Auth checked, app ready to render');
+        setAuthChecked(true); // Mark auth check as complete after fetch.
+        console.log('[CRM] OK Auth checked; app ready to render.');
       }
     };
 
@@ -503,3 +501,4 @@ export const useCRM = () => {
     authChecked: false,
   };
 };
+

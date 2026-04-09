@@ -1,1 +1,1 @@
--r legaledge_backend/requirements.txt
+-r backend/requirements.txt
