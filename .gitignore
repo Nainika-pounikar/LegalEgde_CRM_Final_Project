@@ -16,7 +16,6 @@ media/
 
 # Python artifacts
 __pycache__/
-**/__pycache__/
 *.py[cod]
 *.pyo
 *.pyd
@@ -31,14 +30,22 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Environment files (keep examples)
+# Environment files
 .env
 .env.*
 !.env.example
 !backend/.env.example
 !frontend/.env.example
 
-# OS/editor noise
+# Optional env variants
+*.env.local
+*.env.production
+
+# Backup files
+*backup*.json
+*backup*.sql
+
+# OS/editor
 .DS_Store
 Thumbs.db
 .vscode/
